@@ -1,6 +1,9 @@
+<script setup lang="ts">
+import CalendarMain from "./components/CalendarMain.vue";
+</script>
+
 <template>
-  <div>
-    <NuxtRouteAnnouncer />
-    <NuxtWelcome />
-  </div>
+    <div>
+        <CalendarMain />
+    </div>
 </template>

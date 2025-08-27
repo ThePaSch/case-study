@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import type { CalendarEvent } from "~/models/calendar-event";
 import type { CalendarState } from "~/models/calendar-state";
-import { format } from "date-fns";
+import { addDays, format, subDays } from "date-fns";
 
 export const useCalendarStore = defineStore("calendar", {
     state: (): CalendarState => ({
@@ -12,6 +12,7 @@ export const useCalendarStore = defineStore("calendar", {
                 { title: "Project Sync", startTime: "14:30" },
             ],
         },
+        selectedDate: new Date(),
     }),
 
     getters: {
@@ -24,6 +25,12 @@ export const useCalendarStore = defineStore("calendar", {
                 return [...state.events[dateKey]].sort((a, b) =>
                     a.startTime.localeCompare(b.startTime)
                 );
+            };
+        },
+        dayHasEvents(state) {
+            return (date: Date): boolean => {
+                const key = format(date, "yyyy-MM-dd");
+                return !!(state.events[key] && state.events[key].length > 0);
             };
         },
     },
@@ -61,6 +68,15 @@ export const useCalendarStore = defineStore("calendar", {
 
             this.events[dateKey].push(payload.newEvent);
             return { success: true, message: "Event added successfully." };
+        },
+        setCurrentDate(date: Date) {
+            this.selectedDate = date;
+        },
+        gotoNextDay() {
+            this.selectedDate = addDays(this.selectedDate, 1);
+        },
+        gotoPreviousDay() {
+            this.selectedDate = subDays(this.selectedDate, 1);
         },
     },
 });
