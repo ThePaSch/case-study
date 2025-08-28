@@ -50,7 +50,7 @@ docker build -t thepasch/nitrado-case-study:master .
 Wait until the pod is ready. Once this is the case, forward a local port to the running service (e.g. 8080):
 
 ```bash
-kubectl port-forward svc/my-calendar-service 8080:80
+kubectl port-forward svc/nitrado-case-study-service 8080:80
 ```
 
 Access the application under that port.
