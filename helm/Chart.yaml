@@ -1,0 +1,6 @@
+apiVersion: v2
+name: nitrado-case-study
+description: The chart that deploys the Nitrado case study calendar app
+type: application
+version: 1.0.0
+appVersion: "1.0.0"

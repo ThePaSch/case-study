@@ -1,0 +1,17 @@
+replicaCount: 1
+ 
+image:
+ repository: thepasch/nitrado-case-study
+ tag: "master"
+ pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: "nginx"
+  hostname: calendar.local
+  path: /
+  pathType: ImplementationSpecific
