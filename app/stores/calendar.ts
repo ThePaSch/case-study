@@ -1,7 +1,8 @@
 import { defineStore } from "pinia";
 import type { CalendarEvent } from "~/models/calendar-event";
 import type { CalendarState } from "~/models/calendar-state";
-import { addDays, format, subDays } from "date-fns";
+import { addDays, format, parse, subDays } from "date-fns";
+import type { AddEventResult } from "~/models/add-event-result";
 
 export const useCalendarStore = defineStore("calendar", {
     state: (): CalendarState => ({
@@ -36,12 +37,21 @@ export const useCalendarStore = defineStore("calendar", {
     },
 
     actions: {
-        addEvent(payload: { date: Date; newEvent: CalendarEvent }): {
-            success: boolean;
-            message: string;
-        } {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
+        addEvent(payload: {
+            date: Date;
+            newEvent: CalendarEvent;
+        }): AddEventResult {
+            if (
+                !payload.newEvent.title.trim() ||
+                !payload.newEvent.startTime.trim()
+            ) {
+                return {
+                    success: false,
+                    message: "Title and start time cannot be empty.",
+                };
+            }
+
+            const now = new Date();
 
             const timeRegex = /^([01][0-9]|2[0-3]):([0-5][0-9])$/;
 
@@ -52,8 +62,9 @@ export const useCalendarStore = defineStore("calendar", {
                 };
             }
 
-            if (payload.date < today) {
-                console.error("Cannot add an event to a past date.");
+            if (
+                parse(payload.newEvent.startTime, "HH:mm", payload.date) < now
+            ) {
                 return {
                     success: false,
                     message: "You cannot add an event to a past date.",

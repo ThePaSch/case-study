@@ -3,9 +3,10 @@ import { computed } from "vue";
 import { useCalendarStore } from "~/stores/calendar";
 import { storeToRefs } from "pinia";
 
-import CalendarWidget from "./CalendarWidget.vue";
-import DayNavigation from "./DayNavigation.vue";
-import EventsView from "./EventsView.vue";
+import CalendarWidget from "./calendar-widget/CalendarWidget.vue";
+import DayNavigation from "./events-view/DayNavigation.vue";
+import EventsView from "./events-view/EventsView.vue";
+import type { CalendarEvent } from "~/models/calendar-event";
 
 const store = useCalendarStore();
 const { selectedDate } = storeToRefs(store);
@@ -14,6 +15,14 @@ const dayHasEventsCheck = computed(() => store.dayHasEvents);
 
 const handleDateSelect = (date: Date) => {
     store.setCurrentDate(date);
+};
+
+const handleAddEvent = (title: string, startTime: string) => {
+    const event: CalendarEvent = {
+        title: title,
+        startTime: startTime,
+    };
+    return store.addEvent({ date: selectedDate.value, newEvent: event });
 };
 </script>
 
@@ -32,7 +41,14 @@ const handleDateSelect = (date: Date) => {
                         (date: Date) => handleDateSelect(date)
                     "
                 />
-                <EventsView :events="eventsForDay" />
+                <EventsView
+                    :events="eventsForDay"
+                    :selected-date="selectedDate"
+                    :add-event="
+                        (title: string, time: string) =>
+                            handleAddEvent(title, time)
+                    "
+                />
             </div>
         </div>
     </main>
